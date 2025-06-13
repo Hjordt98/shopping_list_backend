@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ShoppingLists extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'user_id'];
+    protected $fillable = ['name', 'user_id', 'text'];
 
     public function user()
     {

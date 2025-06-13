@@ -47,9 +47,25 @@ class ShoppingListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ShoppingLists $shoppingList)
     {
-        //
+        //validate the request
+        $validated = $request->validate([
+            'text' => '',
+        ]);
+
+        // Check if the list belongs to the user
+        if ($shoppingList->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // update the text
+        $shoppingList->update([
+            'text' => $validated['text'],
+        ]);
+
+        //Return the updated list
+        return response()->json($shoppingList);
     }
 
     /**
