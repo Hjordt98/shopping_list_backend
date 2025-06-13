@@ -73,6 +73,13 @@ class ShoppingListController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // find the list and check if it belongs to the user
+        $shoppingList = auth()->user()->shoppingLists()->findOrFail($id);
+
+        // delete the list
+        $shoppingList->delete();
+        
+        // return a success message
+        return response()->json(['message' => 'List deleted succesfully']);
     }
 }

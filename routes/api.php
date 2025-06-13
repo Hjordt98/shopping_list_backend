@@ -17,6 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::patch('/shopping-lists/{shoppingList}', [ShoppingListController::class, 'update']);
 
-    
+    Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy']);
 
 });
