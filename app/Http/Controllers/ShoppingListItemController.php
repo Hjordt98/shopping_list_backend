@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ShoppingLists;
+use App\Models\ShoppingListItems;
 
 class ShoppingListItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the items for a specific shopping list.
      */
-    public function index()
+    public function index(ShoppingLists $shoppingList)
     {
-        $shoppingListItems = auth()->user()->shoppingListItems()->get();
-        return response()->json($shoppingListItems);
+        // Ensure the list belongs to the authenticated user
+        if ($shoppingList->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        return response()->json($shoppingList->items);
     }
 
     /**
@@ -36,7 +41,30 @@ class ShoppingListItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Find the item
+        $item = ShoppingListItems::find($id);
+        if (!$item) {
+            return response()->json(['error' => 'Item not found'], 404);
+        }
+
+        // Get the shopping list and verify ownership
+        $shoppingList = ShoppingLists::find($item->shopping_list_id);
+        if (!$shoppingList || $shoppingList->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Validate the request
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'quantity' => 'sometimes|integer|min:1',
+            'is_checked' => 'sometimes|boolean'
+        ]);
+
+        // Update the item
+        $item->update($validated);
+
+        // Return the updated item
+        return response()->json($item);
     }
 
     /**
@@ -44,6 +72,17 @@ class ShoppingListItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $item = ShoppingListItems::find($id);
+        if (!$item) {
+            return response()->json(['error' => 'Item not found'], 404);
+        }
+
+        $shoppingList = ShoppingLists::find($item->shopping_list_id);
+        if (!$shoppingList || $shoppingList->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $item->delete();
+        return response()->json(['message' => 'Item deleted successfully'], 200);
     }
 }

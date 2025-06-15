@@ -13,7 +13,7 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
-        $shoppingLists = auth()->user()->shoppingLists()->get();
+        $shoppingLists = auth()->user()->shoppingLists()->with('items')->get();
         return response()->json($shoppingLists);
     }
 

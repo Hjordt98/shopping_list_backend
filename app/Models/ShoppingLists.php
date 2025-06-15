@@ -15,8 +15,8 @@ class ShoppingLists extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function shoppingListItems()
+    public function items()
     {
-        return $this->hasMany(ShoppingListItems::class);
+        return $this->hasMany(ShoppingListItems::class, 'shopping_list_id');
     }
 }
