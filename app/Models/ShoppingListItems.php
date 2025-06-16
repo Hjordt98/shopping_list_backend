@@ -14,4 +14,15 @@ class ShoppingListItems extends Model
     {
         return $this->belongsTo(ShoppingLists::class);
     }
+
+    protected static function booted()
+    {
+        static::saved(function ($item) {
+            $item->shoppingList->touch();
+        });
+
+        static::deleted(function ($item) {
+            $item->shoppingList->touch();
+        });
+    }
 }
