@@ -25,4 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/shopping-list-items/{id}', [ShoppingListItemController::class, 'destroy']);
 
     Route::patch('/shopping-list-items/{id}', [ShoppingListItemController::class, 'update']);
+
+    Route::post('/shopping-list-items', [ShoppingListItemController::class, 'store']);
 });

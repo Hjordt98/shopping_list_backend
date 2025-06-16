@@ -25,7 +25,21 @@ class ShoppingListItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validate the request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:1',
+            'shopping_list_id' => 'required|integer'
+        ]);
+
+        //create the item to the list
+        $item = ShoppingListItems::create([
+            'name' => $validated['name'],
+            'quantity' => $validated['quantity'],
+            'shopping_list_id' => $validated['shopping_list_id']
+        ]);
+
+        return response()->json($item);
     }
 
     /**

@@ -51,7 +51,7 @@ class ShoppingListController extends Controller
     {
         //validate the request
         $validated = $request->validate([
-            'text' => '',
+            'name' => '',
         ]);
 
         // Check if the list belongs to the user
@@ -61,7 +61,7 @@ class ShoppingListController extends Controller
 
         // update the text
         $shoppingList->update([
-            'text' => $validated['text'],
+            'name' => $validated['name'],
         ]);
 
         //Return the updated list
