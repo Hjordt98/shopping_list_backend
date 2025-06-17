@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ShoppingLists;
+use Illuminate\Support\Facades\Log;
 
 class ShoppingListController extends Controller
 {
@@ -82,4 +83,26 @@ class ShoppingListController extends Controller
         // return a success message
         return response()->json(['message' => 'List deleted succesfully']);
     }
+
+    public function updateFavorite(Request $request, string $id)
+    {
+        // validate the request
+        $validated = $request->validate([
+            'favorite' => 'boolean',
+        ]);
+
+        // find the list and check if it belongs to the user
+        $shoppingList = auth()->user()->shoppingLists()->findOrFail($id);
+
+        // update the favorite status
+        $shoppingList->update([
+            'is_favorite' => $validated['favorite'],
+        ]);
+
+
+        // return the updated list
+        return response()->json($shoppingList);
+    }
+
+
 }

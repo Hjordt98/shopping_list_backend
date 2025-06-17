@@ -27,4 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/shopping-list-items/{id}', [ShoppingListItemController::class, 'update']);
 
     Route::post('/shopping-list-items', [ShoppingListItemController::class, 'store']);
+
+    Route::patch('/shopping-lists/{id}/favorite', [ShoppingListController::class, 'updateFavorite']);
+
 });
