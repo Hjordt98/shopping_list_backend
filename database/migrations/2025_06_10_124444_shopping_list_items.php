@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('quantity')->default(1);
             $table->boolean('is_checked')->default(false);
             $table->foreignId('shopping_list_id')->constrained('shopping_lists')->onDelete('cascade');
+            $table->string('category')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
