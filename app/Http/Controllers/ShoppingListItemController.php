@@ -29,14 +29,16 @@ class ShoppingListItemController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            'shopping_list_id' => 'required|integer'
+            'shopping_list_id' => 'required|integer',
+            'category' => 'nullable|string|max:255'
         ]);
 
         //create the item to the list
         $item = ShoppingListItems::create([
             'name' => $validated['name'],
             'quantity' => $validated['quantity'],
-            'shopping_list_id' => $validated['shopping_list_id']
+            'shopping_list_id' => $validated['shopping_list_id'],
+            'category' => $validated['category']
         ]);
 
         return response()->json($item);
@@ -71,7 +73,8 @@ class ShoppingListItemController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'quantity' => 'sometimes|integer|min:1',
-            'is_checked' => 'sometimes|boolean'
+            'is_checked' => 'sometimes|boolean',
+            'category' => 'sometimes|string|max:255'
         ]);
 
         // Update the item
