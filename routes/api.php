@@ -3,8 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShoppingListController;
-use App\Http\Controllers\ShoppingListItemController;
-
+use App\Http\Controllers\ShoppingListItemController;    
+use App\Http\Controllers\CategoriesController;
 
 Route::middleware('auth:sanctum')->group(function () {
     
@@ -30,4 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::patch('/shopping-lists/{id}/favorite', [ShoppingListController::class, 'updateFavorite']);
 
+    Route::get('/categories', [CategoriesController::class, 'index']);
+
 });
+
+
