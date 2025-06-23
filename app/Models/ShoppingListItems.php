@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ShoppingListItems extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'quantity', 'is_checked', 'shopping_list_id', 'category_id'];
+    protected $fillable = ['name', 'quantity', 'is_checked', 'shopping_list_id', 'category_id', 'is_favorite'];
 
     public function shoppingList()
     {

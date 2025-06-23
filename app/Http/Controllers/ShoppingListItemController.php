@@ -30,7 +30,8 @@ class ShoppingListItemController extends Controller
             'name' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
             'shopping_list_id' => 'required|integer',
-            'category_id' => 'required|integer'
+            'category_id' => 'required|integer',
+            'is_favorite' => 'sometimes|boolean'
         ]);
 
         //create the item to the list
@@ -38,7 +39,8 @@ class ShoppingListItemController extends Controller
             'name' => $validated['name'],
             'quantity' => $validated['quantity'],
             'shopping_list_id' => $validated['shopping_list_id'],
-            'category_id' => $validated['category_id']
+            'category_id' => $validated['category_id'],
+            'is_favorite' => $validated['is_favorite']
         ]);
 
         return response()->json($item);
@@ -74,7 +76,8 @@ class ShoppingListItemController extends Controller
             'name' => 'sometimes|string|max:255',
             'quantity' => 'sometimes|integer|min:1',
             'is_checked' => 'sometimes|boolean',
-            'category_id' => 'sometimes|integer|exists:categories,id'
+            'category_id' => 'sometimes|integer|exists:categories,id',
+            'is_favorite' => 'sometimes|boolean'
         ]);
 
         // Update the item
