@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShoppingLists::class);
     }
+
+    public function sharedLists()
+    {
+        return $this->belongsToMany(SharedLists::class);
+    }
 }
