@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('is_checked')->default(false);
             $table->foreignId('shopping_list_id')->constrained('shopping_lists')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories');
+            $table->decimal('price_per_unit', 10, 2)->nullable();
             $table->boolean('is_favorite')->default(false);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
