@@ -79,7 +79,8 @@ class ShoppingListItemController extends Controller
             'quantity' => 'sometimes|integer|min:1',
             'is_checked' => 'sometimes|boolean',
             'category_id' => 'sometimes|integer|exists:categories,id',
-            'is_favorite' => 'sometimes|boolean'
+            'is_favorite' => 'sometimes|boolean',
+            'price_per_unit' => 'sometimes|numeric|min:0'
         ]);
 
         // Update the item
