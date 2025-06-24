@@ -22,6 +22,6 @@ class ShoppingLists extends Model
 
     public function sharedLists() 
     {
-        return $this->belongsToMany(User::class, 'shared_lists', 'shopping_list_id', 'owner_id');
+        return $this->belongsToMany(User::class, 'shared_lists', 'shopping_list_id', 'collaborator_id');
     }
 }

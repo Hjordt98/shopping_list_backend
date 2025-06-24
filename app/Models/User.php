@@ -51,6 +51,6 @@ class User extends Authenticatable
 
     public function sharedLists()
     {
-        return $this->belongsToMany(SharedLists::class);
+        return $this->belongsToMany(ShoppingLists::class, 'shared_lists', 'collaborator_id', 'shopping_list_id');
     }
 }
