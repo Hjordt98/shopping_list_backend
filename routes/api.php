@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShoppingListController;
 use App\Http\Controllers\ShoppingListItemController;    
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\SharedListController;
 
 Route::middleware('auth:sanctum')->group(function () {
     
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/shopping-lists/{id}/favorite', [ShoppingListController::class, 'updateFavorite']);
 
     Route::get('/categories', [CategoriesController::class, 'index']);
+
+    Route::post('/shared-lists/add-collaborator/{listId}', [SharedListController::class, 'addCollaborator']);
 
 });
 
