@@ -13,7 +13,11 @@ class SharedListController extends Controller
      */
     public function index()
     {
-        //
+        $sharedLists = SharedLists::with('shoppingList')
+        ->where('collaborator_id', auth()->id())
+        ->get();
+
+        return response()->json($sharedLists, 200);
     }
 
     /**

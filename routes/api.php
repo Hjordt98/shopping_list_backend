@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/shared-lists/remove-collaborator/{listId}', [SharedListController::class, 'removeCollaborator'])->name('remove-collaborator');
 
+    Route::get('/shared-lists', [SharedListController::class, 'index']);
 });
 
 
