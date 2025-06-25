@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\SharedLists;
+use App\Models\ShoppingLists;
 
 class SharedListController extends Controller
 {
@@ -13,7 +14,7 @@ class SharedListController extends Controller
      */
     public function index()
     {
-        $sharedLists = SharedLists::with('shoppingList')
+        $sharedLists = SharedLists::with('shoppingList.user')
         ->where('collaborator_id', auth()->id())
         ->get();
 
@@ -132,5 +133,23 @@ class SharedListController extends Controller
         $sharedList->delete();
 
         return response()->json(['message' => 'collaborator removed successfully'], 200);
+    }
+
+    public function sharedWithMe()
+    {
+        $sharedLists = SharedLists::with('shoppingList.user')
+        ->where('collaborator_id', auth()->id())
+        ->get();
+
+        return response()->json($sharedLists, 200);
+    }
+
+    public function sharedByMe() {
+        $lists = ShoppingLists::with('collaborators')
+        ->where('user_id', auth()->id())
+        ->has('collaborators')
+        ->get();
+
+        return response()->json($lists, 200);
     }
 }
