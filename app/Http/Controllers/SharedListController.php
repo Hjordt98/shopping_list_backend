@@ -95,4 +95,38 @@ class SharedListController extends Controller
 
         return response()->json(['message' => 'Collaborator added successfully'], 200);
     }
+
+    public function getCollaborators(string $listId)
+    {
+        $shoppingList = auth()->user()->shoppingLists()->findOrFail($listId);
+
+        $collaborators = $shoppingList->collaborators;
+
+        return response()->json($collaborators, 200);
+    }
+
+    public function removeCollaborator(Request $request, string $listId)
+    {
+        $validated = $request->validate([
+            'collaborator_email' => 'required|string|email|max:100'
+        ]);
+
+        $shoppingList = auth()->user()->shoppingLists()->findOrFail($listId);
+
+        $collaborator = User::where('email', $validated['collaborator_email'])->first();
+
+        if (!$collaborator) {
+            return response()->json(['message' => 'collaborator not found'], 404);
+        }
+
+        $sharedList = SharedLists::where('shopping_list_id', $shoppingList->id)->where('collaborator_id', $collaborator->id)->first();
+
+        if (!$sharedList) {
+            return response()->json(['message' => 'collaborator not found on this list'], 404);           
+        }
+
+        $sharedList->delete();
+
+        return response()->json(['message' => 'collaborator removed successfully'], 200);
+    }
 }
