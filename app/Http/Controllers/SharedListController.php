@@ -14,7 +14,7 @@ class SharedListController extends Controller
      */
     public function index()
     {
-        $sharedLists = SharedLists::with('shoppingList.user')
+        $sharedLists = SharedLists::with('shoppingList.user', 'shoppingList.items')
         ->where('collaborator_id', auth()->id())
         ->get();
 
@@ -137,7 +137,7 @@ class SharedListController extends Controller
 
     public function sharedWithMe()
     {
-        $sharedLists = SharedLists::with('shoppingList.user')
+        $sharedLists = SharedLists::with('shoppingList.user', 'shoppingList.items')
         ->where('collaborator_id', auth()->id())
         ->get();
 

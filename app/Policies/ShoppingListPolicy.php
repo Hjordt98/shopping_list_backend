@@ -48,7 +48,8 @@ class ShoppingListPolicy
      */
     public function delete(User $user, ShoppingLists $shoppingLists): bool
     {
-        return $user->id === $shoppingLists->user_id;
+        return $user->id === $shoppingLists->user_id ||
+        $shoppingLists->collaborators()->where('users.id', $user->id)->exists();
     }
 
     /**
