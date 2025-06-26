@@ -14,6 +14,8 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
+        $this->authorize("viewAny", ShoppingLists::class);
+
         $shoppingLists = auth()->user()->shoppingLists()->with('items')->get();
         return response()->json($shoppingLists);
     }
@@ -25,8 +27,10 @@ class ShoppingListController extends Controller
     {
         // Validate the request
         $validated = $request->validate([
-            'name' => '',
+            'name' => 'string|max:255|required',
         ]);
+    
+        $this->authorize('create', ShoppingLists::class);
 
         // Create the shopping list for the authenticated user
         $list = $request->user()->shoppingLists()->create([
@@ -50,15 +54,25 @@ class ShoppingListController extends Controller
      */
     public function update(Request $request, ShoppingLists $shoppingList)
     {
+        $user = auth()->user();
+        $isOwner = $user->id === $shoppingList->user_id;
+        $isCollaborator = $shoppingList->collaborators()->where('users.id', $user->id)->exists();
+
+        \Log::info('ShoppingListController@update authorization debug', [
+            'user_id' => $user->id,
+            'list_owner_id' => $shoppingList->user_id,
+            'is_owner' => $isOwner,
+            'is_collaborator' => $isCollaborator,
+            'list_id' => $shoppingList->id,
+            'list_name' => $shoppingList->name
+        ]);
+
+        $this->authorize('update', $shoppingList);
+
         //validate the request
         $validated = $request->validate([
             'name' => '',
         ]);
-
-        // Check if the list belongs to the user
-        if ($shoppingList->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
 
         // update the text
         $shoppingList->update([
@@ -74,14 +88,16 @@ class ShoppingListController extends Controller
      */
     public function destroy(string $id)
     {
-        // find the list and check if it belongs to the user
-        $shoppingList = auth()->user()->shoppingLists()->findOrFail($id);
+        // find the list (don't restrict to user's lists yet)
+        $shoppingList = ShoppingLists::findOrFail($id);
+
+        $this->authorize('delete', $shoppingList);
 
         // delete the list
         $shoppingList->delete();
         
         // return a success message
-        return response()->json(['message' => 'List deleted succesfully']);
+        return response()->json(['message' => 'List deleted successfully']);
     }
 
     public function updateFavorite(Request $request, string $id)
@@ -91,14 +107,13 @@ class ShoppingListController extends Controller
             'favorite' => 'boolean',
         ]);
 
-        // find the list and check if it belongs to the user
-        $shoppingList = auth()->user()->shoppingLists()->findOrFail($id);
+        $shoppingList = ShoppingLists::findOrFail($id);
+        $this->authorize('update', $shoppingList);
 
         // update the favorite status
         $shoppingList->update([
             'is_favorite' => $validated['favorite'],
         ]);
-
 
         // return the updated list
         return response()->json($shoppingList);

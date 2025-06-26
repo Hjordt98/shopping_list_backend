@@ -13,10 +13,8 @@ class ShoppingListItemController extends Controller
      */
     public function index(ShoppingLists $shoppingList)
     {
-        // Ensure the list belongs to the authenticated user
-        if ($shoppingList->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $shoppingList);
+    
         return response()->json($shoppingList->items);
     }
 
@@ -34,6 +32,15 @@ class ShoppingListItemController extends Controller
             'is_favorite' => 'sometimes|boolean',
             'price_per_unit' => 'sometimes|numeric|min:0'
         ]);
+
+        // Check if the user can add items to this list
+        $shoppingList = ShoppingLists::find($validated['shopping_list_id']);
+        if (!$shoppingList) {
+            return response()->json(['error' => 'Shopping list not found'], 404);
+        }
+
+        // check if the user can add items to this list
+        $this->authorize('update', $shoppingList);
 
         //create the item to the list
         $item = ShoppingListItems::create([
@@ -61,17 +68,30 @@ class ShoppingListItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the item
         $item = ShoppingListItems::find($id);
         if (!$item) {
             return response()->json(['error' => 'Item not found'], 404);
         }
 
-        // Get the shopping list and verify ownership
         $shoppingList = ShoppingLists::find($item->shopping_list_id);
-        if (!$shoppingList || $shoppingList->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$shoppingList) {
+            return response()->json(['error' => 'Shopping list not found'], 404);
         }
+
+        $user = auth()->user();
+        $isOwner = $user->id === $shoppingList->user_id;
+        $isCollaborator = $shoppingList->collaborators()->where('users.id', $user->id)->exists();
+
+        \Log::info('ShoppingListItemController@update authorization debug', [
+            'user_id' => $user->id,
+            'list_owner_id' => $shoppingList->user_id,
+            'is_owner' => $isOwner,
+            'is_collaborator' => $isCollaborator,
+            'list_id' => $shoppingList->id,
+            'list_name' => $shoppingList->name
+        ]);
+
+        $this->authorize('update', $shoppingList);
 
         // Validate the request
         $validated = $request->validate([
@@ -101,9 +121,12 @@ class ShoppingListItemController extends Controller
         }
 
         $shoppingList = ShoppingLists::find($item->shopping_list_id);
-        if (!$shoppingList || $shoppingList->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$shoppingList) {
+            return response()->json(['error' => 'Shopping list not found'], 404);
         }
+
+        // check if the user can delete the item
+        $this->authorize('update', $shoppingList);
 
         $item->delete();
         return response()->json(['message' => 'Item deleted successfully'], 200);

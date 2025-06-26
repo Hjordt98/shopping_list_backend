@@ -54,3 +54,4 @@ class User extends Authenticatable
         return $this->belongsToMany(ShoppingLists::class, 'shared_lists', 'collaborator_id', 'shopping_list_id');
     }
 }
+ 
