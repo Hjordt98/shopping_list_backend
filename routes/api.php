@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/shared-lists/shared-by-me', [SharedListController::class, 'sharedByMe']);
 
+    Route::get('/shared-lists/collaborators', [SharedListController::class, 'getCollaboratorsForAllLists']);
+
 });
 
 
