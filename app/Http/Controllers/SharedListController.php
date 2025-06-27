@@ -73,7 +73,8 @@ class SharedListController extends Controller
     {
         // validate the request
         $validated = $request->validate([
-        'collaborator_email' => 'required|string|email|max:100'
+            'collaborator_email' => 'required|string|email|max:100',
+            'list_name' => 'required|string|max:100'
         ]);
 
         // find the list and check if it belongs to the user
@@ -96,6 +97,7 @@ class SharedListController extends Controller
         $sharedList = SharedLists::create([
             'shopping_list_id' => $shoppingList->id,
             'collaborator_id' => $collaborator->id,
+            'list_name' => $validated['list_name']
         ]);
 
         return response()->json(['message' => 'Collaborator added successfully'], 200);
