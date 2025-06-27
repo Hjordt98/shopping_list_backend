@@ -67,4 +67,5 @@ class ShoppingListPolicy
     {
         return false;
     }
+    
 }
